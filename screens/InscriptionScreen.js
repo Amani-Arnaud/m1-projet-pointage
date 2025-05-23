@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, Text, StyleSheet, Alert, Image } from 'react-native';
+import { checkMatricule } from '../services/Api';
 
 const InscriptionScreen = () => {
   const [matricule, setMatricule] = useState('');
@@ -7,18 +8,41 @@ const InscriptionScreen = () => {
   const [nom, setNom] = useState('jean');
   const [prenoms, setPrenoms] = useState('Yves');
   const [nationalite, setNationalite] = useState('Ivoirienne');
-  const [parcours, setParcours] = useState('Ense');
+  const [parcours, setParcours] = useState('Ivoirienne');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
   // Fonction pour vérifier la validité du matricule
-  const handleVerifyMatricule = () => {
-    // Exemple de logique de validation de matricule (à adapter selon ta base de données)
-    if (matricule === '12345') { // Exemple, remplacer par la logique réelle
-      setIsMatriculeValid(true);
-    } else {
-      Alert.alert('Matricule invalide', 'Le matricule que vous avez entré est incorrect.');
+  const handleVerifyMatricule = async () => {
+
+    try {
+
+      console.log("Matricule entre:", matricule);
+
+      const res = await checkMatricule({ matricule });
+
+      if (res.data.exists) {
+        setNom(res.data.user.Nom);
+        setPrenoms(res.data.user.Prenom);
+        setNationalite(res.data.user.nationalite);
+        setParcours(res.data.user.parcours);
+        setIsMatriculeValid(true);
+      } else {
+        Alert.alert('Matricule invalide', 'Le matricule que vous avez entré est incorrect.');
+      }
+
+    } catch (err) {
+      Alert.alert('Connexion échouée ', 'Échec de connexion');
+      console.log("Erreur API .");
+      console.log(err);
+
     }
+    
+    // if (matricule === '12345') { // Exemple, remplacer par la logique réelle
+    //   setIsMatriculeValid(true);
+    // } else {
+    //   Alert.alert('Matricule invalide', 'Le matricule que vous avez entré est incorrect.');
+    // }
   };
 
   const handleInscription = () => {
@@ -42,48 +66,51 @@ const InscriptionScreen = () => {
 
   return (
     <View style={styles.container}>
-        <Image source={require('../assets/logo.png')} style={styles.logo}/>
+      <Image source={require('../assets/logo.png')} style={styles.logo}/>
+      
       {/* Champ pour le matricule et bouton de vérification */}
-        {/* <View style={styles.checkBtn}> */}
-            <TextInput
-                style={styles.input}
-                placeholder="Matricule"
-                value={matricule}
-                onChangeText={setMatricule}
-            />
-            <Button title="Vérifier Matricule" onPress={handleVerifyMatricule} />
-        {/* </View> */}
-
-      {isMatriculeValid && (
-        <View style={styles.formContainer}>
-          {/* Champs affichés si le matricule est valide */}
+      {!isMatriculeValid && (
+        <View style={styles.checkBtn}>
           <TextInput
             style={styles.input}
-            placeholder="Nom"
+            placeholder="Matricule"
+            value={matricule}
+            onChangeText={setMatricule}
+          />
+          <Button title="Vérifier Matricule" onPress={handleVerifyMatricule} />
+        </View>
+      )}
+
+      {/* Afficher le formulaire si le matricule est valide */}
+      {isMatriculeValid && (
+        <View style={styles.formContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Votre Nom..."
             value={nom}
             onChangeText={setNom}
           />
           <TextInput
             style={styles.input}
-            placeholder="Prénoms"
+            placeholder="Votre Prénoms..."
             value={prenoms}
             onChangeText={setPrenoms}
           />
           <TextInput
             style={styles.input}
-            placeholder="Nationalité"
+            placeholder="Votre Nationalité..."
             value={nationalite}
             onChangeText={setNationalite}
           />
           <TextInput
             style={styles.input}
-            placeholder="Parcours"
+            placeholder="Votre Parcours..."
             value={parcours}
             onChangeText={setParcours}
           />
           <TextInput
             style={styles.input}
-            placeholder="Mot de passe"
+            placeholder="Votre Mot de passe"
             secureTextEntry
             value={password}
             onChangeText={setPassword}
@@ -123,7 +150,11 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: '100%',
   },
-  logo: { width : 150, height: 150, marginBottom : 20 ,alignSelf:'center'}, 
+  logo: { width: 150, height: 150, marginBottom: 20, alignSelf: 'center' }, 
+  checkBtn: {
+    width: '100%',
+    marginBottom: 20,
+  }
 });
 
 export default InscriptionScreen;
