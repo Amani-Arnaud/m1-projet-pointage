@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, Text, StyleSheet, Alert, Image } from 'react-native';
-import { checkMatricule } from '../services/Api';
+import {register, checkMatricule } from '../services/Api';
 
-const InscriptionScreen = () => {
+const InscriptionScreen = ({ navigation }) => {
   const [matricule, setMatricule] = useState('');
   const [isMatriculeValid, setIsMatriculeValid] = useState(false);
   const [nom, setNom] = useState('jean');
@@ -45,7 +45,7 @@ const InscriptionScreen = () => {
     // }
   };
 
-  const handleInscription = () => {
+  const handleInscription = async () => {
     // Vérification des mots de passe
     if (password !== confirmPassword) {
       Alert.alert('Erreur', 'Les mots de passe ne correspondent pas.');
@@ -53,15 +53,28 @@ const InscriptionScreen = () => {
     }
 
     // Logique pour envoyer les données d'inscription
-    console.log({
-      matricule,
-      nom,
-      prenoms,
-      nationalite, 
-      parcours,
-      password,
-    });
-    Alert.alert('Inscription réussie', 'Vous êtes inscrit avec succès.');
+    try {
+      const res = await register({ matricule, nom, prenoms, nationalite,  parcours, password });
+      if (res.data.code == "200") {
+        Alert.alert('Inscription reussie', 'Vos informatiuons ont bien été enregistrer');
+        navigation.navigate('Home');
+      } else {
+        Alert.alert('Echec Inscription ', 'Echec de mise a jour de vos informations');
+      }
+    } catch (error) {
+      Alert.alert('Connexion échouée ', 'Échec de connexion');
+      console.log("Erreur API .");
+      console.log(error);
+    }
+    // console.log({
+    //   matricule,
+    //   nom,
+    //   prenoms,
+    //   nationalite, 
+    //   parcours,
+    //   password,
+    // });
+    // Alert.alert('Inscription réussie', 'Vous êtes inscrit avec succès.');
   };
 
   return (

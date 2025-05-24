@@ -15,7 +15,14 @@ export const checkMatricule = async (data) => {
 };
 
 export const register = async (data) => {
-  return instance.post('/register', data);
+  console.log('data :', data);
+  return instance.post('/register.php', data);
+
+  // return instance.post('/register.php', data).then(response => {
+  //   console.log('Réponse :', response.data);
+  // });
+
+
 };
 
 export const login = async (data) => {
