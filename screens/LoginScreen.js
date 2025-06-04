@@ -8,7 +8,8 @@ export default function LoginScreen({ navigation }) {
   const handleLogin = () => {
     // navigation.navigate('Home');
     if (email === 'admin@example.com' && password === 'admin123') {
-      navigation.navigate('Home');
+      navigation.replace('Home');
+      // navigation.navigate('Home');
     } else {
       Alert.alert('Échec Authentification', 'Identifiants invalides');
     }

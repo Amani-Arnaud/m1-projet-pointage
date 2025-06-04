@@ -1,71 +1,41 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
 
-export default function AccueilScreen({ navigation }) {
+import Accueil from './HomeComponents/Accueil';
+import Arrivee from './HomeComponents/Arrivee';
+import Depart from './HomeComponents/Depart';
+import Presences from './HomeComponents/Presences';
+import Profil from './HomeComponents/Profil';
+
+const Tab = createBottomTabNavigator();
+
+export default function HomeScreen() {
   return (
-    <View style={styles.container}>
-      {/* Logo */}
-      <Image
-        source={require('../assets/logo.png')} // Assure-toi que le chemin est correct
-        style={styles.logo}
-        resizeMode="contain"
-      />
-
-      <Text style={styles.title}>Bienvenue sur l'application de pointage</Text>
-
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('PointerArrivee')}>
-        <Text style={styles.buttonText}>Pointer l'arrivée</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('PointerDepart')}>
-        <Text style={styles.buttonText}>Pointer le départ</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Presences')}>
-        <Text style={styles.buttonText}>Mes présences</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Profil')}>
-        <Text style={styles.buttonText}>Mon profil</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={[styles.button, { backgroundColor: '#ff4d4d' }]} onPress={() => navigation.navigate('Login')}>
-        <Text style={styles.buttonText}>Se déconnecter</Text>
-      </TouchableOpacity>
-    </View>
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarIcon: ({ color, size }) => {
+          let iconName;
+          switch (route.name) {
+            case 'Accueil': iconName = 'home'; break;
+            case 'Arrivée': iconName = 'log-in'; break;
+            case 'Départ': iconName = 'log-out'; break;
+            case 'Présences': iconName = 'calendar'; break;
+            case 'Profil': iconName = 'person'; break;
+            default: iconName = 'ellipse';
+          }
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: '#007bff',
+        tabBarInactiveTintColor: 'gray',
+      })}
+    >
+      <Tab.Screen name="Accueil" component={Accueil} />
+      <Tab.Screen name="Arrivée" component={Arrivee} />
+      <Tab.Screen name="Départ" component={Depart} />
+      <Tab.Screen name="Présences" component={Presences} />
+      <Tab.Screen name="Profil" component={Profil} />
+    </Tab.Navigator>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f6f9fc',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-  },
-  logo: {
-    width: 150,
-    height: 150,
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 30,
-    textAlign: 'center',
-    color: '#333',
-  },
-  button: {
-    backgroundColor: '#007bff',
-    padding: 15,
-    borderRadius: 8,
-    marginVertical: 8,
-    width: '100%',
-  },
-  buttonText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontSize: 16,
-  },
-});

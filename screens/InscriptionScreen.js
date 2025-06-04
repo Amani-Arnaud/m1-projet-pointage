@@ -57,7 +57,7 @@ const InscriptionScreen = ({ navigation }) => {
       const res = await register({ matricule, nom, prenoms, nationalite,  parcours, password });
       if (res.data.code == "200") {
         Alert.alert('Inscription reussie', 'Vos informatiuons ont bien été enregistrer');
-        navigation.navigate('Home');
+        navigation.replace('Home');
       } else {
         Alert.alert('Echec Inscription ', 'Echec de mise a jour de vos informations');
       }

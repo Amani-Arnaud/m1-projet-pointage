@@ -15,9 +15,9 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">
         <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Inscription" component={InscriptionScreen} />
+        <Stack.Screen name="Inscription" component={InscriptionScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
-        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false, gestureEnabled: false, headerLeft: () => null, }} />
         <Stack.Screen name="Profil" component={Profil} />
         <Stack.Screen name="Pointage" component={Pointage} />
       </Stack.Navigator>
